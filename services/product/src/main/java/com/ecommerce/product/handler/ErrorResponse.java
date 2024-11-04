@@ -1,4 +1,9 @@
 package com.ecommerce.product.handler;
 
-public record ErrorResponse() {
+import java.util.Map;
+
+public record ErrorResponse(
+        Map<String, String> errors
+) {
+
 }
