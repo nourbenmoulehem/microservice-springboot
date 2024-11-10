@@ -2,6 +2,8 @@ package com.ecommerce.order.order;
 
 import com.ecommerce.order.customer.CustomerClient;
 import com.ecommerce.order.exception.BusinessException;
+import com.ecommerce.order.kafka.OrderConfirmation;
+import com.ecommerce.order.kafka.OrderProducer;
 import com.ecommerce.order.orderLine.OrderLineRequest;
 import com.ecommerce.order.orderLine.OrderLineService;
 import com.ecommerce.order.product.ProductClient;
@@ -24,7 +26,7 @@ public class OrderService {
     //private final PaymentClient paymentClient;
     private final ProductClient productClient;
     private final OrderLineService orderLineService;
-    //private final OrderProducer orderProducer;
+    private final OrderProducer orderProducer;
 
     @Transactional
     public Integer createOrder(OrderRequest request) {
@@ -62,15 +64,15 @@ public class OrderService {
 //        paymentClient.requestOrderPayment(paymentRequest);
 
         // TODO send confirmation (kafka)
-//        orderProducer.sendOrderConfirmation(
-//                new OrderConfirmation(
-//                        request.reference(),
-//                        request.amount(),
-//                        request.paymentMethod(),
-//                        customer,
-//                        purchasedProducts
-//                )
-//        );
+        orderProducer.sendOrderConfirmation(
+                new OrderConfirmation(
+                        request.reference(),
+                        request.amount(),
+                        request.paymentMethod(),
+                        customer,
+                        purchasedProducts
+                )
+        );
 
         return order.getId();
     }
